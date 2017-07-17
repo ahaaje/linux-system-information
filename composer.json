@@ -1,0 +1,26 @@
+{
+    "name": "ahaaje/linux-system-information",
+    "description": "Light-weight library to help gather information on a running Linux system",
+    "keywords": ["system information", "os", "stats", "Linux"],
+    "license": "DBAD",
+    "authors": [
+        {
+            "name": "Arne K. Haaje",
+            "email": "arne@drlinux.no",
+            "homepage": "https://www.drlinux.no/",
+            "role": "developer"
+        }
+    ],
+    "type": "library",
+    "require": {
+		"php": ">=5.4"
+    },
+	"require-dev": {
+		"phpunit/phpunit": "5.2.*"
+    },
+	"autoload": {
+        "psr-4": {
+            "Ahaaje\\LinuxSystemInformation\\": "src/"
+        }
+    }
+}
