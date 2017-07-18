@@ -10,5 +10,10 @@ Features
 --------
 
 * PSR-4 autoloading compliant structure
-* Unit-Testing with PHPUnit
-* Examples
+* Example file
+
+Stats that can be fetched
+-------------------------
+- hostname
+- load average (for 1, 5 or 15 minutes)
+- memory, as total, available and used
