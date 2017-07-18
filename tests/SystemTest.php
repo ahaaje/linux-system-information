@@ -17,9 +17,9 @@ class SystemTest extends PHPUnit_Framework_TestCase
      */
     public function testIsThereAnySyntaxError()
     {
-        $var = new System();
-        $this->assertTrue(is_object($var));
-        unset($var);
+        $system = new System();
+        $this->assertTrue(is_object($system));
+        unset($system);
     }
 
     /**
@@ -27,9 +27,9 @@ class SystemTest extends PHPUnit_Framework_TestCase
      */
     public function testGetHostname()
     {
-        $var = new System();
-        $this->assertNotEmpty($var->getHostname());
-        unset($var);
+        $system = new System();
+        $this->assertNotEmpty($system->getHostname());
+        unset($system);
     }
 
     /**
@@ -37,11 +37,43 @@ class SystemTest extends PHPUnit_Framework_TestCase
      */
     public function testGetWrongLoadAverage()
     {
-        $var = new System();
+        $system = new System();
         $this->expectException(\OutOfBoundsException::class);
 
-        $var->getLoadAverage(10);
+        $system->getLoadAverage(10);
     }
 
-    // TODO add test for correct load
+    /**
+     * Test that the load array is set
+     */
+    public function testGetLoad()
+    {
+        $system = new System();
+        $load = $system->getLoad();
+        $this->assertArrayHasKey('avg5', $load);
+        $this->assertNotEmpty($load['avg5']);
+    }
+
+    /**
+     * Test that the correct exception is thrown if we request a memory category that does not exist
+     */
+    public function testGetWrongMemoryCategory()
+    {
+        $system = new System();
+        $this->expectException(\OutOfBoundsException::class);
+
+        $system->getMemoryCategory('badKey');
+    }
+
+    /**
+     * Check that memory info is filled, and that total memory is the sum of available and used
+     */
+    public function testGetMemory()
+    {
+        $system = new System();
+        $memory = $system->getMemory();
+        $this->assertArrayHasKey('available', $memory);
+        $this->assertNotEmpty($memory['available']);
+        $this->assertEquals($memory['total'], ($memory['available'] + $memory['used']));
+    }
 }

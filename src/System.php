@@ -16,6 +16,9 @@ class System
     /** @var array The load average last 1, 5 and 15 minutes */
     private $load = array();
 
+    /** @var array Free, used and total memory (swap not included) */
+    private $memory = array();
+
     /**
      * System constructor.
      * @throws \DomainException if system is not Linux
@@ -26,7 +29,7 @@ class System
             throw new \DomainException(PHP_OS . ' is not a supported operating system');
         }
 
-        $this->hostname = $this->readFile('/etc/hostname');
+        $this->hostname = rtrim($this->readFile('/etc/hostname'));
     }
 
     /**
@@ -49,22 +52,28 @@ class System
 
     /**
      * @param string $filename
-     * @return string
+     * @param bool $asArray Return the file as an array instead of as string
+     * @return mixed
      * @throws FileAccessException|FileMissingException
      */
-    private function readFile($filename)
+    private function readFile($filename, $asArray = false)
     {
         if (!is_file($filename)) {
             throw new FileMissingException($filename . ' does not exist');
         }
 
-        $contents = file_get_contents($filename);
+        if ($asArray) {
+            $contents = file($filename, FILE_IGNORE_NEW_LINES);
+        }
+        else {
+            $contents = file_get_contents($filename);
+        }
 
         if ($contents === false) {
             throw new FileAccessException($filename . ' could not be read');
         }
 
-        return rtrim($contents);
+        return $contents;
     }
 
     /**
@@ -107,6 +116,56 @@ class System
         $this->setLoad();
 
         return $this->load['avg' . $minutes];
+    }
+
+    /**
+     * Read /proc/meminfo and set total, available and used memory
+     */
+    private function setMemory()
+    {
+        if (empty($this->memory)) {
+            $meminfo = $this->readFile('/proc/meminfo', true);
+
+            preg_match("/(\d+)/", $meminfo[0], $matches);
+            $this->memory['total'] = $matches[1];
+
+            $available = 0;
+            for ($i = 1; $i < 4; $i++) {
+                 preg_match("/(\d+)/", $meminfo[$i], $matches);
+                $available += $matches[1];
+            }
+            $this->memory['available'] = $available;
+            $this->memory['used'] = $this->memory['total'] - $available;
+        }
+    }
+
+    /**
+     * Return the memory info as an array with keys total, avalable and used
+     *
+     * @return array
+     */
+    public function getMemory()
+    {
+        $this->setMemory();
+
+        return $this->memory;
+    }
+
+    /**
+     * Return the memory info for either total, available or used
+     *
+     * @param string $category
+     * @return int
+     */
+    public function getMemoryCategory($category)
+    {
+        $categories = ['total', 'available', 'used'];
+        if (!in_array($category, $categories)) {
+            throw new \OutOfBoundsException($category . ' is not a valid memory category. Legal values are ' . implode(', ', $categories));
+        }
+        $this->setMemory();
+
+        return $this->memory[$category];
     }
 }
 ?>
