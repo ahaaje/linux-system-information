@@ -24,7 +24,6 @@ class SystemTest extends PHPUnit_Framework_TestCase
 
     /**
      * Check that we don't receive an empty string
-     *
      */
     public function testGetHostname()
     {
@@ -32,4 +31,17 @@ class SystemTest extends PHPUnit_Framework_TestCase
         $this->assertNotEmpty($var->getHostname());
         unset($var);
     }
+
+    /**
+     * Test that the correct exception is thrown if we request a load average that does not exist
+     */
+    public function testGetWrongLoadAverage()
+    {
+        $var = new System();
+        $this->expectException(\OutOfBoundsException::class);
+
+        $var->getLoadAverage(10);
+    }
+
+    // TODO add test for correct load
 }
