@@ -10,6 +10,8 @@ use Ahaaje\LinuxSystemInformation\Exceptions\FileMissingException;
 */
 class System 
 {
+    const FILE_MOUNTS = '/proc/mounts';
+
     /**  @var string $hostname */
     private $hostname = '';
 
@@ -18,6 +20,9 @@ class System
 
     /** @var array Free, used and total memory (swap not included) */
     private $memory = array();
+
+    /** @var array All mounted file systems as Mount objects */
+    private $mounts = array();
 
     /**
      * System constructor.
@@ -166,6 +171,33 @@ class System
         $this->setMemory();
 
         return $this->memory[$category];
+    }
+
+    /**
+     * Return an array of Mount objects for each mounted file system
+     *
+     * @return array
+     */
+    public function getMounts()
+    {
+        $this->setMounts();
+        return $this->mounts;
+    }
+
+    /**
+     * Read the file of mounted file system, and create a Mount object for each
+     */
+    public function setMounts()
+    {
+        if (empty($this->mounts)) {
+            $mounts = $this->readFile(self::FILE_MOUNTS, true);
+            foreach ($mounts as $mount) {
+                $data = explode(' ', $mount);
+                if (preg_match("/\//", $data[0])) {
+                    $this->mounts[] = new Mount($data[0], $data[1], $data[2]);
+                }
+            }
+        }
     }
 }
 ?>
