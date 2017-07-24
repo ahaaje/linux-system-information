@@ -75,5 +75,6 @@ class SystemTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('available', $memory);
         $this->assertNotEmpty($memory['available']);
         $this->assertEquals($memory['total'], ($memory['available'] + $memory['used']));
+        $this->assertGreaterThan(0, $memory['used'], 'Used memory can not be negative or zero');
     }
 }

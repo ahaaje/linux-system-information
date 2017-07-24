@@ -129,13 +129,9 @@ class System
             preg_match("/(\d+)/", $meminfo[0], $matches);
             $this->memory['total'] = $matches[1];
 
-            $available = 0;
-            for ($i = 1; $i < 4; $i++) {
-                 preg_match("/(\d+)/", $meminfo[$i], $matches);
-                $available += $matches[1];
-            }
-            $this->memory['available'] = $available;
-            $this->memory['used'] = $this->memory['total'] - $available;
+            preg_match("/(\d+)/", $meminfo[2], $matches);
+            $this->memory['available'] = $matches[1];
+            $this->memory['used'] = $this->memory['total'] - $this->memory['available'];
         }
     }
 
