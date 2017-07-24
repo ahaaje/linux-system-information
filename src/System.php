@@ -1,7 +1,5 @@
 <?php 
 namespace Ahaaje\LinuxSystemInformation;
-use Ahaaje\LinuxSystemInformation\Exceptions\FileAccessException;
-use Ahaaje\LinuxSystemInformation\Exceptions\FileMissingException;
 
 /**
 *  Main class for gathering system information
@@ -10,6 +8,8 @@ use Ahaaje\LinuxSystemInformation\Exceptions\FileMissingException;
 */
 class System 
 {
+    use Traits\InformationAccessTrait;
+
     const FILE_MOUNTS = '/proc/mounts';
 
     /**  @var string $hostname */
@@ -53,32 +53,6 @@ class System
     public function getHostname()
     {
         return $this->hostname;
-    }
-
-    /**
-     * @param string $filename
-     * @param bool $asArray Return the file as an array instead of as string
-     * @return mixed
-     * @throws FileAccessException|FileMissingException
-     */
-    private function readFile($filename, $asArray = false)
-    {
-        if (!is_file($filename)) {
-            throw new FileMissingException($filename . ' does not exist');
-        }
-
-        if ($asArray) {
-            $contents = file($filename, FILE_IGNORE_NEW_LINES);
-        }
-        else {
-            $contents = file_get_contents($filename);
-        }
-
-        if ($contents === false) {
-            throw new FileAccessException($filename . ' could not be read');
-        }
-
-        return $contents;
     }
 
     /**
