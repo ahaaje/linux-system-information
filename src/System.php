@@ -9,6 +9,7 @@ namespace Ahaaje\LinuxSystemInformation;
 class System 
 {
     use Traits\InformationAccessTrait;
+    use Traits\NumbersConversionTrait;
 
     const FILE_MOUNTS = '/proc/mounts';
 

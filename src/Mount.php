@@ -6,6 +6,7 @@ namespace Ahaaje\LinuxSystemInformation;
 class Mount
 {
     use Traits\InformationAccessTrait;
+    use Traits\NumbersConversionTrait;
 
     /** @var  string $device */
     private $device;
