@@ -5,6 +5,8 @@ namespace Ahaaje\LinuxSystemInformation;
 
 class Mount
 {
+    use Traits\InformationAccessTrait;
+
     /** @var  string $device */
     private $device;
     /** @var  string $mountPoint */
@@ -13,6 +15,9 @@ class Mount
     private $fsType;
     /** @var  bool $isLocal True if not a network mount */
     private $isLocal;
+
+    /** @var array $space Stats on space for thsi mount. Keys size,used,avail,pcent */
+    private $space = array();
 
     public function __construct($device, $mountPoint, $fsType)
     {
@@ -62,5 +67,29 @@ class Mount
     {
         // TODO this needs a unit test to check correct value against device name
         return $this->isLocal;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSpace()
+    {
+        if (empty($this->space)) {
+            $this->setSpace();
+        }
+        return $this->space;
+    }
+
+    /**
+     * Fill the space array withs stats in keys size,used,avail,pcent
+     */
+    private function setSpace()
+    {
+        $dfSpace = $this->readCommandOutput('df --output=size,used,avail,pcent ' . $this->mountPoint);
+        preg_match("/(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/", $dfSpace[1], $matches);
+        $this->space['size'] = $matches[1];
+        $this->space['used'] = $matches[2];
+        $this->space['avail'] = $matches[3];
+        $this->space['pcent'] = $matches[4];
     }
 }

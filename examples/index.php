@@ -14,7 +14,9 @@ try {
     echo PHP_EOL;
     echo 'Mounted file systems', PHP_EOL;
     foreach ($system->getMounts() as $mount) {
+        /** @var \Ahaaje\LinuxSystemInformation\Mount $mount */
         echo ($mount->isLocal() ? 'Local' : 'Network') . ' ' . $mount->getFsType() . ': ' . $mount->getMountPoint(), PHP_EOL;
+        var_dump($mount->getSpace());
     }
 
 } catch (\RuntimeException $e) {
