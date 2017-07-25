@@ -65,7 +65,6 @@ class Mount
      */
     public function isLocal()
     {
-        // TODO this needs a unit test to check correct value against device name
         return $this->isLocal;
     }
 
@@ -78,6 +77,23 @@ class Mount
             $this->setSpace();
         }
         return $this->space;
+    }
+
+    /**
+     * Return the file system space info for either keys size,used,avail,pcent
+     *
+     * @param string $category
+     * @return int
+     */
+    public function getSpaceCategory($category)
+    {
+        $categories = ['keys', 'size', 'used', 'avail', 'pcent'];
+        if (!in_array($category, $categories)) {
+            throw new \OutOfBoundsException($category . ' is not a valid space category. Legal values are ' . implode(', ', $categories));
+        }
+        $this->setSpace();
+
+        return $this->space[$category];
     }
 
     /**

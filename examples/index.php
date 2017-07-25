@@ -16,7 +16,7 @@ try {
     foreach ($system->getMounts() as $mount) {
         /** @var \Ahaaje\LinuxSystemInformation\Mount $mount */
         echo ($mount->isLocal() ? 'Local' : 'Network') . ' ' . $mount->getFsType() . ': ' . $mount->getMountPoint(), PHP_EOL;
-        var_dump($mount->getSpace());
+        echo "\t size: " . $mount->getSpaceCategory('size') . ', used : ' . $mount->getSpaceCategory('used') . ', available ' . $mount->getSpaceCategory('avail') . ', used %' . $mount->getSpaceCategory('pcent'), PHP_EOL;
     }
 
 } catch (\RuntimeException $e) {
