@@ -11,6 +11,14 @@ try {
     echo 'Total memory: ' . $system->getMemoryCategory('total'), PHP_EOL;
     echo 'Used memory: ' . $system->getMemoryCategory('used'), PHP_EOL;
     echo 'Available memory: ' . $system->getMemoryCategory('available'), PHP_EOL;
+    echo PHP_EOL;
+    echo 'Mounted file systems', PHP_EOL;
+    foreach ($system->getMounts() as $mount) {
+        /** @var \Ahaaje\LinuxSystemInformation\Mount $mount */
+        echo ($mount->isLocal() ? 'Local' : 'Network') . ' ' . $mount->getFsType() . ': ' . $mount->getMountPoint(), PHP_EOL;
+        echo "\t size: " . $mount->getSpaceCategory('size') . ', used : ' . $mount->getSpaceCategory('used') . ', available ' . $mount->getSpaceCategory('avail') . ', used %' . $mount->getSpaceCategory('pcent'), PHP_EOL;
+    }
+
 } catch (\RuntimeException $e) {
     // Some stat could not be accessed
     echo get_class($e) . ' : ' . $e->getMessage(), PHP_EOL;
