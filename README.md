@@ -15,6 +15,7 @@ Features
 * PSR-4 auto loading compliant structure
 * Example file
 * Normalize stats to "human readable" form
+* Extendability
 
 Stats that can be fetched
 -------------------------
@@ -62,4 +63,6 @@ the get*Category() functions to have them normalized into MB, GB or TB - like th
 ### Exceptions
 Exceptions are thrown as siblings of *RuntimeException* if some stats can't be read or otherwise accessed.
 The information sources used, like */proc/meminfo*, are normally accessible. However, a system administrator could restrict access to functions that read files outside the home directory.
+
 If thrown, the exception message should give you enough information to figure out what is the problem.
+You can extend and override the *System* and *Mount* classes if you have a special setup that is not covered.

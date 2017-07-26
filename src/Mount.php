@@ -11,27 +11,33 @@ namespace Ahaaje\LinuxSystemInformation;
  */
 class Mount
 {
+    /*
+     * This assumes that the command is in your path. If it is not, then you could try putting the following in your script
+     * putenv('PATH=' .$_ENV['PATH']. ':/my/own/path');
+     */
+    const COMMAND_DF = 'df --output=size,used,avail,pcent ';
+
     use Traits\InformationAccessTrait;
     use Traits\NumbersConversionTrait;
 
     /** @var  string $device */
-    private $device;
+    protected $device;
     /** @var  string $mountPoint */
-    private $mountPoint;
+    protected $mountPoint;
     /** @var  string $fsType */
-    private $fsType;
+    protected $fsType;
     /** @var  bool $isLocal True if not a network mount */
-    private $isLocal;
+    protected $isLocal;
 
     /** @var array $space Stats on space for thsi mount. Keys size,used,avail,pcent */
-    private $space = array();
+    protected $space = array();
 
     /**
      * Mount constructor.
      *
-     * @param $device The device file or remote host and directory (myhost:/myexport)
-     * @param $mountPoint
-     * @param $fsType
+     * @param string $device The device file or remote host and directory (myhost:/myexport)
+     * @param string $mountPoint
+     * @param string $fsType
      */
     public function __construct($device, $mountPoint, $fsType)
     {
@@ -117,9 +123,9 @@ class Mount
      * Fill the space array with stats in keys size,used,avail,pcent
      * @return void
      */
-    private function setSpace()
+    protected function setSpace()
     {
-        $dfSpace = $this->readCommandOutput('df --output=size,used,avail,pcent ' . $this->mountPoint);
+        $dfSpace = $this->readCommandOutput(self::COMMAND_DF . $this->mountPoint);
         preg_match("/(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/", $dfSpace[1], $matches);
         $this->space['size'] = $matches[1];
         $this->space['used'] = $matches[2];
