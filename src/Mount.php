@@ -6,6 +6,7 @@ namespace Ahaaje\LinuxSystemInformation;
 class Mount
 {
     use Traits\InformationAccessTrait;
+    use Traits\NumbersConversionTrait;
 
     /** @var  string $device */
     private $device;
@@ -69,6 +70,8 @@ class Mount
     }
 
     /**
+     * Numbers are in kbytes
+     *
      * @return array
      */
     public function getSpace()
@@ -80,12 +83,13 @@ class Mount
     }
 
     /**
-     * Return the file system space info for either keys size,used,avail,pcent
+     * Return the file system space stats (in kbytes) for either keys size,used,avail,pcent
      *
      * @param string $category
+     * @param bool $normalize Return the stat as "human readable"
      * @return int
      */
-    public function getSpaceCategory($category)
+    public function getSpaceCategory($category, $normalize = false)
     {
         $categories = ['keys', 'size', 'used', 'avail', 'pcent'];
         if (!in_array($category, $categories)) {
@@ -93,11 +97,11 @@ class Mount
         }
         $this->setSpace();
 
-        return $this->space[$category];
+        return ($normalize && $category != 'pcent') ? $this->humanReadable($this->space[$category]) : $this->space[$category];
     }
 
     /**
-     * Fill the space array withs stats in keys size,used,avail,pcent
+     * Fill the space array with stats in keys size,used,avail,pcent
      */
     private function setSpace()
     {

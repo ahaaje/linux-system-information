@@ -9,6 +9,7 @@ namespace Ahaaje\LinuxSystemInformation;
 class System 
 {
     use Traits\InformationAccessTrait;
+    use Traits\NumbersConversionTrait;
 
     const FILE_MOUNTS = '/proc/mounts';
 
@@ -130,9 +131,10 @@ class System
      * Return the memory info for either total, available or used
      *
      * @param string $category
+     * @param bool $normalize Return the stat as "human readable"
      * @return int
      */
-    public function getMemoryCategory($category)
+    public function getMemoryCategory($category, $normalize = false)
     {
         $categories = ['total', 'available', 'used'];
         if (!in_array($category, $categories)) {
@@ -140,7 +142,7 @@ class System
         }
         $this->setMemory();
 
-        return $this->memory[$category];
+        return $normalize ? $this->humanReadable($this->memory[$category]) : $this->memory[$category];
     }
 
     /**
