@@ -24,6 +24,7 @@ class CommandExecutionException extends \RuntimeException
 
     /**
      * @param string $command
+     * @return void
      */
     public function setCommand($command)
     {

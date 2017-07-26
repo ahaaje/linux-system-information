@@ -8,22 +8,25 @@ namespace Ahaaje\LinuxSystemInformation;
 */
 class System 
 {
+    const FILE_HOSTNAME = '/etc/hostname';
+    const FILE_LOADAVG = '/proc/loadavg';
+    const FILE_MEMINFO = '/proc/meminfo';
+    const FILE_MOUNTS = '/proc/mounts';
+
     use Traits\InformationAccessTrait;
     use Traits\NumbersConversionTrait;
 
-    const FILE_MOUNTS = '/proc/mounts';
-
     /**  @var string $hostname */
-    private $hostname = '';
+    protected $hostname = '';
 
     /** @var array The load average last 1, 5 and 15 minutes */
-    private $load = array();
+    protected $load = array();
 
     /** @var array Free, used and total memory (swap not included) */
-    private $memory = array();
+    protected $memory = array();
 
     /** @var array All mounted file systems as Mount objects */
-    private $mounts = array();
+    protected $mounts = array();
 
     /**
      * System constructor.
@@ -35,7 +38,7 @@ class System
             throw new \DomainException(PHP_OS . ' is not a supported operating system');
         }
 
-        $this->hostname = rtrim($this->readFile('/etc/hostname'));
+        $this->hostname = rtrim($this->readFile(self::FILE_HOSTNAME));
     }
 
     /**
@@ -58,11 +61,12 @@ class System
 
     /**
      * Read /proc/loadavg and set load for 1, 5 and 15 minutes
+     * @return void
      */
-    private function setLoad()
+    protected function setLoad()
     {
         if (empty($this->load)) {
-            $loadAvg = explode(' ', $this->readFile('/proc/loadavg'));
+            $loadAvg = explode(' ', $this->readFile(self::FILE_LOADAVG));
             $this->load['avg1'] = $loadAvg[0];
             $this->load['avg5'] = $loadAvg[1];
             $this->load['avg15'] = $loadAvg[2];
@@ -100,11 +104,12 @@ class System
 
     /**
      * Read /proc/meminfo and set total, available and used memory
+     * @return void
      */
-    private function setMemory()
+    protected function setMemory()
     {
         if (empty($this->memory)) {
-            $meminfo = $this->readFile('/proc/meminfo', true);
+            $meminfo = $this->readFile(self::FILE_MEMINFO, true);
 
             preg_match("/(\d+)/", $meminfo[0], $matches);
             $this->memory['total'] = $matches[1];
@@ -158,6 +163,7 @@ class System
 
     /**
      * Read the file of mounted file system, and create a Mount object for each
+     * @return void
      */
     public function setMounts()
     {

@@ -20,7 +20,7 @@ trait InformationAccessTrait
      * @return mixed
      * @throws FileAccessException|FileMissingException|FunctionMissingException
      */
-    private function readFile($filename, $asArray = false)
+    protected function readFile($filename, $asArray = false)
     {
         if (!is_file($filename)) {
             throw new FileMissingException($filename . ' does not exist');
@@ -61,7 +61,7 @@ trait InformationAccessTrait
      * @return array
      * @throws FunctionMissingException|CommandExecutionException
      */
-    private function readCommandOutput($command)
+    protected function readCommandOutput($command)
     {
         $output = array();
         $resultCode = null;
