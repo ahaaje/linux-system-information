@@ -1,4 +1,5 @@
 <?php
+// Run this file from the command line inside the examples directory with "php index.php"
 require '../vendor/autoload.php';
 
 use Ahaaje\LinuxSystemInformation\System;

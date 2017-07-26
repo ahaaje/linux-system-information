@@ -12,14 +12,16 @@ The information is read from the files in /proc/* and /etc/*. These are usually 
 Features
 --------
 
-* PSR-4 autoloading compliant structure
+* PSR-4 auto loading compliant structure
 * Example file
+* Normalize stats to "human readable" form
 
 Stats that can be fetched
 -------------------------
 - hostname
-- load average (for 1, 5 or 15 minutes)
+- load average for 1, 5 or 15 minutes
 - memory as total, available and used
+- file system size and usage
 
 ### Requirements
  - Linux
@@ -53,3 +55,11 @@ try {
 }
 
 ```
+
+Stat numbers for disk space and memory are returned as kilo bytes, but you can add `true` as a second parameter to
+the get*Category() functions to have them normalized into MB, GB or TB - like this ```php $system->getMemoryCategory('total', true)```
+
+### Exceptions
+Exceptions are thrown as siblings of *RuntimeException* if some stats can't be read or otherwise accessed.
+The information sources used, like */proc/meminfo*, are normally accessible. However, a system administrator could restrict access to functions that read files outside the home directory.
+If thrown, the exception message should give you enough information to figure out what is the problem.

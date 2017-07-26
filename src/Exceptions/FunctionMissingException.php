@@ -24,6 +24,7 @@ class FunctionMissingException extends \RuntimeException
 
     /**
      * @param string $function
+     * @return void
      */
     public function setFunction($function)
     {

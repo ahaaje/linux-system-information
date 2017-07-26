@@ -58,6 +58,7 @@ class System
 
     /**
      * Read /proc/loadavg and set load for 1, 5 and 15 minutes
+     * @return void
      */
     private function setLoad()
     {
@@ -100,6 +101,7 @@ class System
 
     /**
      * Read /proc/meminfo and set total, available and used memory
+     * @return void
      */
     private function setMemory()
     {
@@ -158,6 +160,7 @@ class System
 
     /**
      * Read the file of mounted file system, and create a Mount object for each
+     * @return void
      */
     public function setMounts()
     {

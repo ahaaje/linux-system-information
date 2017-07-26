@@ -2,7 +2,13 @@
 
 namespace Ahaaje\LinuxSystemInformation;
 
-
+/**
+ * Class Mount holds information on file systems mounted
+ * Can be called on it's own, but System will instantiate it if you access the "space" property
+ *
+ * @author Arne K. Haaje <arne@drlinux.no>
+ * @package Ahaaje\LinuxSystemInformation
+ */
 class Mount
 {
     use Traits\InformationAccessTrait;
@@ -20,6 +26,13 @@ class Mount
     /** @var array $space Stats on space for thsi mount. Keys size,used,avail,pcent */
     private $space = array();
 
+    /**
+     * Mount constructor.
+     *
+     * @param $device The device file or remote host and directory (myhost:/myexport)
+     * @param $mountPoint
+     * @param $fsType
+     */
     public function __construct($device, $mountPoint, $fsType)
     {
         $this->device = $device;
@@ -102,6 +115,7 @@ class Mount
 
     /**
      * Fill the space array with stats in keys size,used,avail,pcent
+     * @return void
      */
     private function setSpace()
     {
