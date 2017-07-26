@@ -77,4 +77,10 @@ class SystemTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($memory['total'], ($memory['available'] + $memory['used']));
         $this->assertGreaterThan(0, $memory['used'], 'Used memory can not be negative or zero');
     }
+
+    public function testHumanReadable()
+    {
+        $system = new System();
+        $this->assertEquals('1GB', $system->humanReadable(1048576));
+    }
 }

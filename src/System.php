@@ -1,7 +1,5 @@
 <?php 
 namespace Ahaaje\LinuxSystemInformation;
-use Ahaaje\LinuxSystemInformation\Exceptions\FileAccessException;
-use Ahaaje\LinuxSystemInformation\Exceptions\FileMissingException;
 
 /**
 *  Main class for gathering system information
@@ -10,14 +8,25 @@ use Ahaaje\LinuxSystemInformation\Exceptions\FileMissingException;
 */
 class System 
 {
+    const FILE_HOSTNAME = '/etc/hostname';
+    const FILE_LOADAVG = '/proc/loadavg';
+    const FILE_MEMINFO = '/proc/meminfo';
+    const FILE_MOUNTS = '/proc/mounts';
+
+    use Traits\InformationAccessTrait;
+    use Traits\NumbersConversionTrait;
+
     /**  @var string $hostname */
-    private $hostname = '';
+    protected $hostname = '';
 
     /** @var array The load average last 1, 5 and 15 minutes */
-    private $load = array();
+    protected $load = array();
 
     /** @var array Free, used and total memory (swap not included) */
-    private $memory = array();
+    protected $memory = array();
+
+    /** @var array All mounted file systems as Mount objects */
+    protected $mounts = array();
 
     /**
      * System constructor.
@@ -29,7 +38,7 @@ class System
             throw new \DomainException(PHP_OS . ' is not a supported operating system');
         }
 
-        $this->hostname = rtrim($this->readFile('/etc/hostname'));
+        $this->hostname = rtrim($this->readFile(self::FILE_HOSTNAME));
     }
 
     /**
@@ -51,38 +60,13 @@ class System
     }
 
     /**
-     * @param string $filename
-     * @param bool $asArray Return the file as an array instead of as string
-     * @return mixed
-     * @throws FileAccessException|FileMissingException
-     */
-    private function readFile($filename, $asArray = false)
-    {
-        if (!is_file($filename)) {
-            throw new FileMissingException($filename . ' does not exist');
-        }
-
-        if ($asArray) {
-            $contents = file($filename, FILE_IGNORE_NEW_LINES);
-        }
-        else {
-            $contents = file_get_contents($filename);
-        }
-
-        if ($contents === false) {
-            throw new FileAccessException($filename . ' could not be read');
-        }
-
-        return $contents;
-    }
-
-    /**
      * Read /proc/loadavg and set load for 1, 5 and 15 minutes
+     * @return void
      */
-    private function setLoad()
+    protected function setLoad()
     {
         if (empty($this->load)) {
-            $loadAvg = explode(' ', $this->readFile('/proc/loadavg'));
+            $loadAvg = explode(' ', $this->readFile(self::FILE_LOADAVG));
             $this->load['avg1'] = $loadAvg[0];
             $this->load['avg5'] = $loadAvg[1];
             $this->load['avg15'] = $loadAvg[2];
@@ -120,11 +104,12 @@ class System
 
     /**
      * Read /proc/meminfo and set total, available and used memory
+     * @return void
      */
-    private function setMemory()
+    protected function setMemory()
     {
         if (empty($this->memory)) {
-            $meminfo = $this->readFile('/proc/meminfo', true);
+            $meminfo = $this->readFile(self::FILE_MEMINFO, true);
 
             preg_match("/(\d+)/", $meminfo[0], $matches);
             $this->memory['total'] = $matches[1];
@@ -151,9 +136,10 @@ class System
      * Return the memory info for either total, available or used
      *
      * @param string $category
+     * @param bool $normalize Return the stat as "human readable"
      * @return int
      */
-    public function getMemoryCategory($category)
+    public function getMemoryCategory($category, $normalize = false)
     {
         $categories = ['total', 'available', 'used'];
         if (!in_array($category, $categories)) {
@@ -161,7 +147,35 @@ class System
         }
         $this->setMemory();
 
-        return $this->memory[$category];
+        return $normalize ? $this->humanReadable($this->memory[$category]) : $this->memory[$category];
+    }
+
+    /**
+     * Return an array of Mount objects for each mounted file system
+     *
+     * @return array
+     */
+    public function getMounts()
+    {
+        $this->setMounts();
+        return $this->mounts;
+    }
+
+    /**
+     * Read the file of mounted file system, and create a Mount object for each
+     * @return void
+     */
+    public function setMounts()
+    {
+        if (empty($this->mounts)) {
+            $mounts = $this->readFile(self::FILE_MOUNTS, true);
+            foreach ($mounts as $mount) {
+                $data = explode(' ', $mount);
+                if (preg_match("/\//", $data[0])) {
+                    $this->mounts[] = new Mount($data[0], $data[1], $data[2]);
+                }
+            }
+        }
     }
 }
 ?>
