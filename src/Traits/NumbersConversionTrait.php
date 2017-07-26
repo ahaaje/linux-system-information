@@ -28,7 +28,7 @@ trait NumbersConversionTrait
         foreach ($type2power as $type => $power) {
             /** @var int $one This is 1 KB, MB, GB or TB in bytes */
             $one = pow(2, $power);
-            $result = round($bytes / $one, 2);
+            $result = round($bytes / $one, 1);
             if ($result < 1) {
                 break;
             }

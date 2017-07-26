@@ -76,4 +76,10 @@ class SystemTest extends PHPUnit_Framework_TestCase
         $this->assertNotEmpty($memory['available']);
         $this->assertEquals($memory['total'], ($memory['available'] + $memory['used']));
     }
+
+    public function testHumanReadable()
+    {
+        $system = new System();
+        $this->assertEquals('1GB', $system->humanReadable(1048576));
+    }
 }
