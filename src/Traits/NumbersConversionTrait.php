@@ -9,11 +9,11 @@ namespace Ahaaje\LinuxSystemInformation\Traits;
 trait NumbersConversionTrait
 {
     /**
-     * Return the number as "human readable" to nearest MB, GB or TB
+     * Return the number as "human-readable" to the nearest MB, GB, or TB
      * @param int $kBytes
      * @return string
      */
-    public function humanReadable($kBytes)
+    public function humanReadable(int $kBytes): string
     {
         $bytes = $kBytes * 1024;
         $type2power = [

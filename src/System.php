@@ -8,29 +8,29 @@ namespace Ahaaje\LinuxSystemInformation;
 */
 class System 
 {
-    const FILE_HOSTNAME = '/etc/hostname';
-    const FILE_LOADAVG = '/proc/loadavg';
-    const FILE_MEMINFO = '/proc/meminfo';
-    const FILE_MOUNTS = '/proc/mounts';
+    const string FILE_HOSTNAME = '/etc/hostname';
+    const string FILE_LOADAVG = '/proc/loadavg';
+    const string FILE_MEMINFO = '/proc/meminfo';
+    const string FILE_MOUNTS = '/proc/mounts';
 
     use Traits\InformationAccessTrait;
     use Traits\NumbersConversionTrait;
 
     /**  @var string $hostname */
-    protected $hostname = '';
+    protected string $hostname = '';
 
-    /** @var array The load average last 1, 5 and 15 minutes */
-    protected $load = array();
+    /** @var array The load average last 1, 5, and 15 minutes */
+    protected array $load = [];
 
-    /** @var array Free, used and total memory (swap not included) */
-    protected $memory = array();
+    /** @var array Free, used, and total memory (swap not included) */
+    protected array $memory = [];
 
     /** @var array All mounted file systems as Mount objects */
-    protected $mounts = array();
+    protected array $mounts = [];
 
     /**
      * System constructor.
-     * @throws \DomainException if system is not Linux
+     * @throws \DomainException if the system is not Linux
      */
     public function __construct()
     {
@@ -54,16 +54,16 @@ class System
     *
     * @return string
     */
-    public function getHostname()
+    public function getHostname(): string
     {
         return $this->hostname;
     }
 
     /**
-     * Read /proc/loadavg and set load for 1, 5 and 15 minutes
+     * Read /proc/loadavg and set the load for 1, 5, and 15 minutes
      * @return void
      */
-    protected function setLoad()
+    protected function setLoad(): void
     {
         if (empty($this->load)) {
             $loadAvg = explode(' ', $this->readFile(self::FILE_LOADAVG));
@@ -78,7 +78,7 @@ class System
      *
      * @return array
      */
-    public function getLoad()
+    public function getLoad(): array
     {
         $this->setLoad();
 
@@ -86,16 +86,16 @@ class System
     }
 
     /**
-     * Return the load average for 1, 5 or 15 minutes
+     * Return the load average for 1, 5, or 15 minutes
      *
      * @param int $minutes
      * @return float
      */
-    public function getLoadAverage($minutes)
+    public function getLoadAverage(int $minutes): float
     {
         $averages = [1, 5, 15];
         if (!in_array($minutes, $averages)) {
-            throw new \OutOfBoundsException($minutes . ' is not a valid agerage. Legal values are ' . implode(', ', $averages));
+            throw new \OutOfBoundsException($minutes . ' is not a valid average. Legal values are ' . implode(', ', $averages));
         }
         $this->setLoad();
 
@@ -106,7 +106,7 @@ class System
      * Read /proc/meminfo and set total, available and used memory
      * @return void
      */
-    protected function setMemory()
+    protected function setMemory(): void
     {
         if (empty($this->memory)) {
             $meminfo = $this->readFile(self::FILE_MEMINFO, true);
@@ -121,11 +121,11 @@ class System
     }
 
     /**
-     * Return the memory info as an array with keys total, avalable and used
+     * Return the memory info as an array with keys total, available, and used
      *
      * @return array
      */
-    public function getMemory()
+    public function getMemory(): array
     {
         $this->setMemory();
 
@@ -136,10 +136,10 @@ class System
      * Return the memory info for either total, available or used
      *
      * @param string $category
-     * @param bool $normalize Return the stat as "human readable"
+     * @param bool $normalize Return the stat as "human-readable"
      * @return int
      */
-    public function getMemoryCategory($category, $normalize = false)
+    public function getMemoryCategory(string $category, bool $normalize = false): int
     {
         $categories = ['total', 'available', 'used'];
         if (!in_array($category, $categories)) {
@@ -155,17 +155,17 @@ class System
      *
      * @return array
      */
-    public function getMounts()
+    public function getMounts(): array
     {
         $this->setMounts();
         return $this->mounts;
     }
 
     /**
-     * Read the file of mounted file system, and create a Mount object for each
+     * Read the file of the mounted file system and create a Mount object for each
      * @return void
      */
-    public function setMounts()
+    public function setMounts(): void
     {
         if (empty($this->mounts)) {
             $mounts = $this->readFile(self::FILE_MOUNTS, true);
@@ -178,4 +178,3 @@ class System
         }
     }
 }
-?>

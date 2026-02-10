@@ -12,12 +12,12 @@ namespace Ahaaje\LinuxSystemInformation\Exceptions;
 class FunctionMissingException extends \RuntimeException
 {
     /** @var  string $function */
-    protected $function;
+    protected string $function;
 
     /**
      * @return string
      */
-    public function getFunction()
+    public function getFunction(): string
     {
         return $this->function;
     }
@@ -26,7 +26,7 @@ class FunctionMissingException extends \RuntimeException
      * @param string $function
      * @return void
      */
-    public function setFunction($function)
+    public function setFunction(string $function): void
     {
         $this->function = $function;
     }

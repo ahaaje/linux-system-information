@@ -16,11 +16,11 @@ trait InformationAccessTrait
 {
     /**
      * @param string $filename
-     * @param bool $asArray Return the file as an array instead of as string
-     * @return mixed
+     * @param bool $asArray Return the file as an array instead of as a string
+     * @return string|array
      * @throws FileAccessException|FileMissingException|FunctionMissingException
      */
-    protected function readFile($filename, $asArray = false)
+    protected function readFile(string $filename, bool $asArray = false): string|array
     {
         if (!is_file($filename)) {
             throw new FileMissingException($filename . ' does not exist');
@@ -61,7 +61,7 @@ trait InformationAccessTrait
      * @return array
      * @throws FunctionMissingException|CommandExecutionException
      */
-    protected function readCommandOutput($command)
+    protected function readCommandOutput(string $command): array
     {
         $output = array();
         $resultCode = null;

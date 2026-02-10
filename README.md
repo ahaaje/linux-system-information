@@ -6,7 +6,7 @@ Linux System Information
 
 This is a light-weight library to gather information (stats) about the Linux system it is running on.
 
-The information is read from the files in /proc/* and /etc/*. These are usually world readable, but your system may vary. There is no dependency on `system` or `exec`calls to binaries installed on your system.
+The information is read from the files in /proc/* and /etc/*. These are usually world-readable, but your system may vary. There is no dependency on `system` or `exec`calls to binaries installed on your system.
 
 
 Features
@@ -14,7 +14,7 @@ Features
 
 * PSR-4 auto loading compliant structure
 * Example file
-* Normalize stats to "human readable" form
+* Normalize stats to a "human-readable" form
 * Extendability
 
 Stats that can be fetched
@@ -26,13 +26,13 @@ Stats that can be fetched
 
 ### Requirements
  - Linux
- - PHP 5.5
+ - PHP 8.3
  
 ### Installation
 With [composer](https://getcomposer.org/) simply do `composer require ahaaje/linux-system-information` inside your project directory.
 
 ### Usage
-This is from the example file. You should not need to require the auto loader if already using composer to manage your project requirements
+This is from the example file. You should not need to require the autoloader if already using composer to manage your project requirements
 
 ```php
 <?php
@@ -57,7 +57,7 @@ try {
 
 ```
 
-Stat numbers for disk space and memory are returned as kilo bytes, but you can add `true` as a second parameter to
+Stat numbers for disk space and memory are returned as kilobytes, but you can add `true` as a second parameter to
 the get*Category() functions to have them normalized into MB, GB or TB - like this ```php $system->getMemoryCategory('total', true)```
 
 ### Exceptions

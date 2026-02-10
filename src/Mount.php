@@ -4,7 +4,7 @@ namespace Ahaaje\LinuxSystemInformation;
 
 /**
  * Class Mount holds information on file systems mounted
- * Can be called on it's own, but System will instantiate it if you access the "space" property
+ * Can be called on its own, but System will instantiate it if you access the "space" property
  *
  * @author Arne K. Haaje <arne@drlinux.no>
  * @package Ahaaje\LinuxSystemInformation
@@ -15,22 +15,19 @@ class Mount
      * This assumes that the command is in your path. If it is not, then you could try putting the following in your script
      * putenv('PATH=' .$_ENV['PATH']. ':/my/own/path');
      */
-    const COMMAND_DF = 'df --output=size,used,avail,pcent ';
+    const string COMMAND_DF = 'df --output=size,used,avail,pcent ';
 
     use Traits\InformationAccessTrait;
     use Traits\NumbersConversionTrait;
 
-    /** @var  string $device */
-    protected $device;
-    /** @var  string $mountPoint */
-    protected $mountPoint;
-    /** @var  string $fsType */
-    protected $fsType;
+    protected string $device;
+    protected string $mountPoint;
+    protected string $fsType;
     /** @var  bool $isLocal True if not a network mount */
-    protected $isLocal;
+    protected bool $isLocal;
 
-    /** @var array $space Stats on space for thsi mount. Keys size,used,avail,pcent */
-    protected $space = array();
+    /** @var array $space Stats on space for this mount. Keys size,used,avail,pcent */
+    protected array $space = [];
 
     /**
      * Mount constructor.
@@ -39,13 +36,13 @@ class Mount
      * @param string $mountPoint
      * @param string $fsType
      */
-    public function __construct($device, $mountPoint, $fsType)
+    public function __construct(string $device, string $mountPoint, string $fsType)
     {
         $this->device = $device;
         $this->mountPoint = $mountPoint;
         $this->fsType = $fsType;
 
-        $this->isLocal = (substr($device, 0, 1) == '/');
+        $this->isLocal = str_starts_with($device, '/');
     }
 
     /**
@@ -53,7 +50,7 @@ class Mount
      *
      * @return string
      */
-    public function getDevice()
+    public function getDevice(): string
     {
         return $this->device;
     }
@@ -63,7 +60,7 @@ class Mount
      *
      * @return string
      */
-    public function getMountPoint()
+    public function getMountPoint(): string
     {
         return $this->mountPoint;
     }
@@ -73,7 +70,7 @@ class Mount
      *
      * @return string
      */
-    public function getFsType()
+    public function getFsType(): string
     {
         return $this->fsType;
     }
@@ -83,7 +80,7 @@ class Mount
      *
      * @return bool
      */
-    public function isLocal()
+    public function isLocal(): bool
     {
         return $this->isLocal;
     }
@@ -93,7 +90,7 @@ class Mount
      *
      * @return array
      */
-    public function getSpace()
+    public function getSpace(): array
     {
         if (empty($this->space)) {
             $this->setSpace();
@@ -105,10 +102,10 @@ class Mount
      * Return the file system space stats (in kbytes) for either keys size,used,avail,pcent
      *
      * @param string $category
-     * @param bool $normalize Return the stat as "human readable"
+     * @param bool $normalize Return the stat as "human-readable"
      * @return int
      */
-    public function getSpaceCategory($category, $normalize = false)
+    public function getSpaceCategory(string $category, bool $normalize = false): int
     {
         $categories = ['keys', 'size', 'used', 'avail', 'pcent'];
         if (!in_array($category, $categories)) {
@@ -123,7 +120,7 @@ class Mount
      * Fill the space array with stats in keys size,used,avail,pcent
      * @return void
      */
-    protected function setSpace()
+    protected function setSpace(): void
     {
         $dfSpace = $this->readCommandOutput(self::COMMAND_DF . $this->mountPoint);
         preg_match("/(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/", $dfSpace[1], $matches);

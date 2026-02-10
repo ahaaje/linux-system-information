@@ -10,14 +10,14 @@ namespace Ahaaje\LinuxSystemInformation\Exceptions;
 class CommandExecutionException extends \RuntimeException
 {
     /** @var  string $command */
-    protected $command;
+    protected string $command;
 
     /**
      * Get the command we tried to call
      *
      * @return string
      */
-    public function getCommand()
+    public function getCommand(): string
     {
         return $this->command;
     }
@@ -26,7 +26,7 @@ class CommandExecutionException extends \RuntimeException
      * @param string $command
      * @return void
      */
-    public function setCommand($command)
+    public function setCommand(string $command): void
     {
         $this->command = $command;
     }

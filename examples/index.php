@@ -2,6 +2,7 @@
 // Run this file from the command line inside the examples directory with "php index.php"
 require '../vendor/autoload.php';
 
+use Ahaaje\LinuxSystemInformation\Mount;
 use Ahaaje\LinuxSystemInformation\System;
 
 try {
@@ -15,7 +16,7 @@ try {
     echo PHP_EOL;
     echo 'Mounted file systems', PHP_EOL;
     foreach ($system->getMounts() as $mount) {
-        /** @var \Ahaaje\LinuxSystemInformation\Mount $mount */
+        /** @var Mount $mount */
         echo ($mount->isLocal() ? 'Local' : 'Network') . ' ' . $mount->getFsType() . ': ' . $mount->getMountPoint(), PHP_EOL;
         echo "\t size: " . $mount->getSpaceCategory('size', true) . ', used : ' . $mount->getSpaceCategory('used', true) . ', available ' . $mount->getSpaceCategory('avail', true) . ', used %' . $mount->getSpaceCategory('pcent'), PHP_EOL;
     }
