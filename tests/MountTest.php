@@ -1,12 +1,13 @@
 <?php
 use Ahaaje\LinuxSystemInformation\Mount;
+use PHPUnit\Framework\TestCase;
 
 /**
  *  Corresponding Class to test the Mount class
  *
  *  @author Arne K. Haaje <arne@drlinux.no>
  */
-class MountTest extends PHPUnit_Framework_TestCase
+class MountTest extends TestCase
 {
     /**
      * Just check if Mount has no syntax error

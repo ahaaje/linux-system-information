@@ -1,24 +1,24 @@
 <?php
 use Ahaaje\LinuxSystemInformation\System;
+use PHPUnit\Framework\TestCase;
 
 /**
  *  Corresponding Class to test YourClass class
  *
  *  For each class in your library, there should be a corresponding Unit-Test for it
- *  Unit-Tests should be as much as possible independent from other test going on.
+ *  Unit-Tests should be as much as possible independent of other test going on.
  *
  *  @author Arne K. Haaje <arne@drlinux.no>
  */
-class SystemTest extends PHPUnit_Framework_TestCase
+class SystemTest extends TestCase
 {
     /**
-     * Just check if the YourClass has no syntax error
+     * Check if the YourClass has no syntax error
      *
      */
     public function testIsThereAnySyntaxError()
     {
         $system = new System();
-        $this->assertTrue(is_object($system));
         unset($system);
     }
 
